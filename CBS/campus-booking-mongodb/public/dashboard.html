@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Booking Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>My Bookings</h1>
+    <div id="bookings"></div>
+    
+    <script>
+        // Fetch bookings from API
+        fetch('/api/user/dashboard.php', {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let html = '';
+            data.bookings.forEach(booking => {
+                html += `
+                <div class="booking">
+                    <h3>${booking.name} (${booking.type})</h3>
+                    <p>${new Date(booking.start_time).toLocaleString()} - ${new Date(booking.end_time).toLocaleString()}</p>
+                    <img src="/api/bookings/generate_qr.php?id=${booking.id}" width="100">
+                </div>`;
+            });
+            document.getElementById('bookings').innerHTML = html;
+        });
+    </script>
+</body>
+</html>
